@@ -2,7 +2,7 @@ class GameOfLife(object):
     """
     Class for the Game of Life
     """
-    def __init__(self, ocean: list[list[int]]) -> None: # Initialize the ocean attribute in__init__
+    def __init__(self, ocean: list[list[int]]) -> None:  # Initialize the ocean attribute in__init__
 
         """
        Initializes the Game of Life with the initial ocean state.
