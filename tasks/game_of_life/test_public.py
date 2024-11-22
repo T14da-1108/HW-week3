@@ -278,6 +278,15 @@ def test_methods() -> None:
 def test_life_game(test_case: Case) -> None:
     game = GameOfLife(test_case.board)
     generation = None
+
     for _ in range(test_case.generation_number):
         generation = game.get_next_generation()
+
+    print("Generated Board:")
+    for row in generation:
+        print(row)
+
+    print("Expected Board:")
+    for row in test_case.expected:
+        print(row)
     assert generation == test_case.expected

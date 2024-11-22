@@ -1,38 +1,71 @@
-from dataclasses import dataclass, field, InitVar
-from abc import ABC
+from dataclasses import dataclass, field
+from abc import ABC, abstractmethod
+from typing import List
 
 
-DISCOUNT_PERCENTS = 15
-
-
-class Item:
-    # note: you might want to change the order of fields
-    cost: int
-    title: str
-    item_id: int
-
-
-# You may put  `# type: ignore` on this class
-# It is [a really old issue](https://github.com/python/mypy/issues/5374)
-# But seems to be solved
+# 1. Item Class Definition
 @dataclass
-class Position(ABC):
-    item: Item
+class Item:
+    item_id: int
+    title: str
+    cost: int
 
-    def cost(self):
+    def __lt__(self, other: 'Item'):
+        # Sorting items by cost
+        return self.cost < other.cost
+
+
+# 2. Position Abstract Class and Its Subclasses
+class Position(ABC):
+    @abstractmethod
+    def cost(self) -> int:
+        pass
+
+    @property
+    @abstractmethod
+    def item(self) -> Item:
         pass
 
 
 class CountedPosition(Position):
-    count: int
+    def __init__(self, item: Item, count: int):
+        self._item = item
+        self.count = count
+
+    @property
+    def item(self) -> Item:
+        return self._item
+
+    def cost(self) -> int:
+        return self._item.cost * self.count
 
 
 class WeightedPosition(Position):
-    weight: float
+    def __init__(self, item: Item, weight: int):
+        self._item = item
+        self.weight = weight
+
+    @property
+    def item(self) -> Item:
+        return self._item
+
+    def cost(self) -> int:
+        return self._item.cost * self.weight
 
 
+# 3. Order Class Definition
+@dataclass
 class Order:
     order_id: int
-    positions: list[Position]
-    cost: int
-    have_promo: bool
+    positions: List[Position] = field(default_factory=list)
+    is_promo: bool = False
+
+    @property
+    def order_cost(self) -> int:
+        # Calculate the total cost by summing the costs of all positions
+        return sum(position.cost() for position in self.positions)
+
+    @property
+    def have_promo(self) -> bool:
+        # Check if there is a promo, based on item_id
+        return any(position.item.item_id == 0 for position in self.positions)

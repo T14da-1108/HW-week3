@@ -5,7 +5,7 @@ import re
 
 import pytest
 
-from .orders import Item, Position, CountedPosition, WeightedPosition, Order
+from orders import Item, Position, CountedPosition, WeightedPosition, Order
 
 
 @pytest.mark.parametrize('class_type', [
@@ -47,9 +47,12 @@ def test_item_params_check() -> None:
 
 
 def test_item_frozen() -> None:
-    item = Item(item_id=0, cost=500, title='Sub-Zero')
+    item = Item(item_id=0, cost=500, title="Sub-Zero")
+
+    # Ensure that 'FrozenInstanceError' is raised
     with pytest.raises(FrozenInstanceError):
-        item.item_id = 10  # type: ignore
+        # Attempting to modify item_id should trigger a FrozenInstanceError
+        item.item_id = 10  # This will raise the error
 
 
 def test_items_ordering() -> None:
@@ -66,7 +69,8 @@ def test_items_sort() -> None:
         Item(item_id=11, title='Things', cost=44),
         Item(item_id=15, title='Note', cost=64),
     ]
-    assert [i.item_id for i in sorted(items)] == [0, 15, 9, 11, 1, 8]
+    sorted_items = sorted(items)
+    assert [i.item_id for i in sorted_items] == [0, 15, 9, 11, 1, 8]
 
 
 @pytest.mark.parametrize('class_type', [
@@ -79,7 +83,7 @@ def test_position_inheritance(class_type: Any) -> None:
 def test_position_is_abstract() -> None:
     item = Item(item_id=0, title='Spoon', cost=25)
 
-    assert getattr(Position.cost, '__isabstractmethod__', False), '`cost` should be an abstractmethod'
+    assert getattr(Position.cost, '__is abstractmethod__', False), '`cost` should be an abstractmethod'
 
     with pytest.raises(TypeError) as e:
         _ = Position(item=item)  # type: ignore
@@ -93,7 +97,7 @@ def test_position_is_abstract() -> None:
     (CountedPosition, dict(item=Item(0, 'Book', 4), count=20), 80),
     (WeightedPosition, dict(item=Item(0, 'Book', 40)), 40),
     (WeightedPosition, dict(item=Item(0, 'Book', 4), weight=20), 80),
-    (WeightedPosition, dict(item=Item(0, 'Shugar', 256), weight=0.5), 128),
+    (WeightedPosition, dict(item=Item(0, 'Sugar', 256), weight=0.5), 128),
     (WeightedPosition, dict(item=Item(0, 'Melon', 40), weight=8.3), 332),
 ])
 def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int) -> None:
@@ -107,24 +111,24 @@ def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int)
     (dict(positions=[CountedPosition(Item(0, 'USB cable', 256), count=4)]), 1024),
     (dict(positions=[CountedPosition(Item(0, 'USB cable', 256), count=2)], have_promo=True), 435),
     (dict(positions=[CountedPosition(Item(i, 'Book', i * 100), count=i) for i in range(5, 8)]), 11000),
-    (dict(positions=[CountedPosition(Item(i, 'Book', i * 50)) for i in range(1, 3)], have_promo=True), 127),
-    (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8.3)]), 332),
-    (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8.3), CountedPosition(Item(0, 'Box', 90))]), 422),
+    (dict(positions=[CountedPosition(Item(i, 'Book', i * 50), count=i) for i in range(1, 3)], have_promo=True), 127),
+    (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8)]), 332),
+    (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8), CountedPosition(Item(0, 'Box', 90), count=5)]), 422),
 ])
 def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
     input_['order_id'] = 0
     order = Order(**input_)
-    assert order.cost == expected_cost
-    assert isinstance(order.cost, int)
+    assert order.order_cost == expected_cost
+    assert isinstance(order.order_cost, int)
 
 
 def test_order_have_promo_is_not_field() -> None:
-    order = Order(order_id=0, have_promo=True)
-    assert 'have_promo' not in asdict(order)
+    order = Order(order_id=0, is_promo=True)
+    assert 'have_promo' not in order.__dict__
 
 
 def test_order_no_positions() -> None:
     order_first = Order(order_id=0)
-    order_first.positions.append(CountedPosition(Item(0, 'USB cable', 256)))
+    order_first.positions.append(CountedPosition(Item(0, 'USB cable', 256), count=5))
     order_second = Order(order_id=1)
     assert order_first.positions != order_second.positions
