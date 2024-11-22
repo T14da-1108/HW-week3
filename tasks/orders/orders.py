@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-@dataclass
+@dataclass(order= True, frozen=True)
 class Item:
     item_id: int
     title: str
@@ -16,16 +16,6 @@ class Item:
             raise AssertionError("title must be a non-empty string")
         if self.cost <= 0:
             raise AssertionError("cost must be a positive integer")
-
-    def __lt__(self, other: "Item") -> bool:
-        if self.cost == other.cost:
-            return self.title < other.title  # If the cost is the same, compare by title
-        return self.cost < other.cost  # Compare by cost first
-
-    def __gt__(self, other: "Item") -> bool:
-        if self.cost == other.cost:
-            return self.title > other.title  # If the cost is the same, compare by title
-        return self.cost > other.cost  # Compare by cost first
 
 
 @dataclass
