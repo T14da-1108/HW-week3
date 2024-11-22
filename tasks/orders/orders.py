@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from typing import List
 
+
 @dataclass
 class Item:
     item_id: int
@@ -53,7 +54,6 @@ class CountedPosition(Position):
 @dataclass
 class WeightedPosition(Position):
     weight: float = field(default=1.0)
-
 
     @property
     def cost(self) -> int:

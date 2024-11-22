@@ -2,7 +2,8 @@ class GameOfLife(object):
     """
     Class for the Game of Life
     """
-    def __init__(self, ocean: list[list[int]])-> None: #Initialize the ocean attribute in__init__
+    def __init__(self, ocean: list[list[int]]) -> None: #Initialize the ocean attribute in__init__
+
        """
        Initializes the Game of Life with the initial ocean state.
        :param ocean: A 2D list representing the initial state of the ocean.
@@ -12,7 +13,7 @@ class GameOfLife(object):
        self.rows = len(ocean)
        self.cols = len(ocean[0]) if ocean else 0
 
-    def _get_neighbours(self, i:int, j:int) -> list[tuple[int, int]]:
+    def _get_neighbours(self, i: int, j: int) -> list[tuple[int, int]]:
         """
         Returns the coordinates of all valid neighbouring cells.
         :param i: Row index of the current cell.
