@@ -2,6 +2,7 @@ from collections import UserList
 import typing as tp
 from typing import Any
 
+
 class ListTwist(UserList[tp.Any]):
     """
     List-like class with additional attributes:
