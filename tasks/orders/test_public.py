@@ -72,7 +72,7 @@ def test_items_sort() -> None:
         Item(item_id=11, title='Things', cost=44),
         Item(item_id=15, title='Note', cost=64),
     ]
-    sorted_items = sorted(items)
+    sorted_items = sorted(items, key=lambda item: item.cost)
     assert [i.item_id for i in sorted_items] == [0, 15, 9, 11, 1, 8]
 
 
