@@ -9,7 +9,7 @@ class Item:
     title: str
     cost: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.item_id < 0:
             raise AssertionError("item_id must be non-negative")
         if not self.title:
@@ -42,7 +42,7 @@ class Position(ABC):
 class CountedPosition(Position):
     count: int = field(default=1)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.count < 1:
             raise ValueError("Count must be at least 1")
 

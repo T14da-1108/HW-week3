@@ -283,8 +283,11 @@ def test_life_game(test_case: Case) -> None:
         generation = game.get_next_generation()
 
     print("Generated Board:")
-    for row in generation:
-        print(row)
+    if generation is not None:
+        for row in generation:
+            print(row)
+    else:
+        print("Generation is None, unable to iterate")
 
     print("Expected Board:")
     for row in test_case.expected:
