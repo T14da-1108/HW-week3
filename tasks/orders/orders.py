@@ -54,19 +54,18 @@ class WeightedPosition(Position):
 class Order:
     order_id: int
     positions: List[Position] = field(default_factory=list)
-    have_promo: bool = field(default=False)
+    have_promo: bool = field(default=False, init=False)
 
     @property
     def order_cost(self) -> int:
-        """Calculate the total cost of the order, applying promo if eligible."""
         total_cost = 0
         for position in self.positions:
             if isinstance(position, WeightedPosition):
-                total_cost += int(position.item.cost * position.weight)  # Weighted cost calculation
+                total_cost += int(position.item.cost * position.weight)
             elif isinstance(position, CountedPosition):
-                total_cost += int(position.item.cost * position.count)  # Counted cost calculation
+                total_cost += int(position.item.cost * position.count)
 
         if self.have_promo:
-            total_cost = int(round(total_cost * 0.85))  # Apply promo if eligible
+            total_cost = int(total_cost * 0.85)
 
         return total_cost

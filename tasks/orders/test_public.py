@@ -10,60 +10,50 @@ from orders import Item, Position, CountedPosition, WeightedPosition, Order
     Item, Position, CountedPosition, WeightedPosition, Order
 ])
 def test_class_type(class_type: Any) -> None:
-    """Ensure all provided classes are dataclasses."""
     assert is_dataclass(class_type)
 
 
 def test_no_init_implemented() -> None:
-    """Ensure no custom __init__ method is implemented in the solution."""
     solution_file = Path(__file__).parent / 'orders.py'
     assert solution_file.exists()
     with open(solution_file) as f:
         for line in f:
-            assert not re.match(r'.*def __init__.*', line), "__init__ should not be implemented."
+            assert not re.match(r'.*def __init__.*', line)
 
 
 def test_no_compare_implemented() -> None:
-    """Ensure no comparison methods are implemented directly in the solution."""
     solution_file = Path(__file__).parent / 'orders.py'
     assert solution_file.exists()
     with open(solution_file) as f:
         for line in f:
             for method in ['__eq__', '__ne__', '__lt__', '__gt__', '__le__', '__ge__']:
-                assert not re.match(fr'.*def {method}.*', line), f"{method} should not be implemented directly."
+                assert not re.match(fr'.*def {method}.*', line)
 
 
 def test_item_params_check() -> None:
-    """Ensure invalid parameters for Item raise AssertionError."""
-    # Valid case
     Item(item_id=1, title='Spoon', cost=25)
 
-    # Invalid cases
     with pytest.raises(AssertionError):
-        Item(item_id=100, title='', cost=25)  # Empty title
+        Item(item_id=100, title='', cost=25)
     with pytest.raises(AssertionError):
-        Item(item_id=10, title='Pen', cost=-25)  # Negative cost
+        Item(item_id=10, title='Pen', cost=-25)
     with pytest.raises(AssertionError):
-        Item(item_id=10, title='Another Pen', cost=0)  # Zero cost
+        Item(item_id=10, title='Another Pen', cost=0)
 
 
 def test_item_frozen() -> None:
-    """Ensure Item is frozen and cannot be modified."""
-    # 'item_id' should be set at creation, and not modified later.
     item = Item(item_id=0, title="Sub-Zero", cost=500)
 
     with pytest.raises(FrozenInstanceError):
-        item.item_id = 10  # Attempt to modify frozen instance
+        item.item_id = 10
 
 
 def test_items_ordering() -> None:
-    """Test ordering of items based on their properties."""
     assert Item(item_id=0, title='Pop-it', cost=200) < Item(item_id=1, title='Simple Dimple', cost=200)
     assert Item(item_id=0, title='Jacket', cost=15000) > Item(item_id=1, title='Jacket', cost=400)
 
 
 def test_items_sort() -> None:
-    """Test sorting of a list of Item objects."""
     items = [
         Item(item_id=9, title='Thing', cost=44),
         Item(item_id=0, title='Note', cost=8),
@@ -78,18 +68,16 @@ def test_items_sort() -> None:
 
 @pytest.mark.parametrize('class_type', [CountedPosition, WeightedPosition])
 def test_position_inheritance(class_type: Any) -> None:
-    """Ensure CountedPosition and WeightedPosition inherit from Position."""
     assert issubclass(class_type, Position)
 
 
 def test_position_is_abstract() -> None:
-    """Ensure Position class cannot be instantiated directly."""
     item = Item(item_id=0, title='Spoon', cost=25)
 
-    assert getattr(Position.cost, '__is abstractmethod__', False), "'cost' should be an abstract method"
+    assert getattr(Position.cost, '__is abstractmethod__', False)
 
     with pytest.raises(TypeError) as e:
-        _ = Position(item=item)  # type: ignore
+        _ = Position(item=item)
     assert "Can't instantiate abstract class Position without an implementation for abstract method 'cost'" in str(e.value)
 
 
@@ -104,11 +92,11 @@ def test_position_is_abstract() -> None:
     (WeightedPosition, dict(item=Item(0, 'Melon', 40), weight=8.3), 332),
 ])
 def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int) -> None:
-    """Test cost calculation for different Position subclasses."""
     position = class_(**input_)
-    assert 'cost' not in asdict(position), "'cost' should be a property"
+    assert 'cost' not in asdict(position)
     assert position.cost == expected_cost
     assert isinstance(position.cost, (float, int))
+
 
 @pytest.mark.parametrize('input_, expected_cost', [
     (dict(positions=[CountedPosition(Item(0, 'USB cable', 256), count=4)]), 1024),
@@ -119,7 +107,6 @@ def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int)
     (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8.3), CountedPosition(Item(0, 'Box', 90), count=5)]), 422),
 ])
 def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
-    """Test total cost calculation for an Order."""
     input_['order_id'] = 0
     order = Order(**input_)
     assert order.order_cost == expected_cost
@@ -127,13 +114,11 @@ def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
 
 
 def test_order_have_promo_is_not_field() -> None:
-    """Ensure 'have_promo' is not a direct field in Order."""
     order = Order(order_id=0)
     assert 'have_promo' not in order.__dict__
 
 
 def test_order_no_positions() -> None:
-    """Ensure positions are independent between different Order instances."""
     order_first = Order(order_id=0)
     order_first.positions.append(CountedPosition(Item(0, "USB cable", 256), count=5))
 
