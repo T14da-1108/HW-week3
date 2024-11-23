@@ -2,71 +2,61 @@ from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from typing import List
 
-
-@dataclass(order=True, frozen=False)
+@dataclass(frozen=True)
 class Item:
     item_id: int
     title: str
     cost: int
 
-    def __post_init__(self) -> None:
-        if self.item_id < 0:
-            raise AssertionError("item_id must be non-negative")
-        if not self.title:
-            raise AssertionError("title must be a non-empty string")
-        if self.cost <= 0:
-            raise AssertionError("cost must be a positive integer")
+    def __post_init__(self):
+        assert self.title != '', "Title must not be empty"
+        assert self.cost > 0, "Cost must be a positive number"
+
+    def __lt__(self, other: 'Item') -> bool:
+        return (self.cost, self.title) < (other.cost, other.title)
 
 
-@dataclass
 class Position(ABC):
     item: Item
 
+    def __init__(self, item: Item) -> None:
+        self.item = item
+
     @property
     @abstractmethod
-    def cost(self) -> int:
+    def cost(self) -> float:
         pass
 
 
 @dataclass
 class CountedPosition(Position):
-    count: int = field(default=1)
-
-    def __post_init__(self) -> None:
-        if self.count < 1:
-            raise ValueError("Count must be at least 1")
+    item: Item
+    count: int = 1
 
     @property
-    def cost(self) -> int:
+    def cost(self) -> float:
         return self.item.cost * self.count
 
 
 @dataclass
 class WeightedPosition(Position):
-    weight: float = field(default=1.0)
+    item: Item
+    weight: float = 1
 
     @property
-    def cost(self) -> int:
-        return round(self.item.cost * self.weight)
+    def cost(self) -> float:
+        return self.item.cost * self.weight
 
 
 @dataclass
 class Order:
     order_id: int
     positions: List[Position] = field(default_factory=list)
-    have_promo: bool = field(default=False)
+    have_promo: bool = False
 
     @property
     def order_cost(self) -> int:
-        """Calculate the total cost of the order, applying promo if eligible."""
-        total_cost = 0
-        for position in self.positions:
-            if isinstance(position, WeightedPosition):
-                total_cost += int(position.item.cost * position.weight)  # Weighted cost calculation
-            elif isinstance(position, CountedPosition):
-                total_cost += int(position.item.cost * position.count)  # Counted cost calculation
-
+        total_cost = sum(position.cost for position in self.positions)
         if self.have_promo:
-            total_cost = int(round(total_cost * 0.85))  # Apply promo if eligible
-
-        return total_cost
+            total_cost *= 0.9
+        return int(total_cost)
