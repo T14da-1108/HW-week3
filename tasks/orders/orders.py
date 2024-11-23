@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-@dataclass(frozen=False)
+@dataclass(frozen=False)  # frozen=Trueにしてしまうと、属性が変更できないため、変更を許可する
 class Item:
     item_id: int
     title: str
