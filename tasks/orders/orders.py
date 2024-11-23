@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class Item:
     item_id: int
     title: str
