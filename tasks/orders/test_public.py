@@ -73,7 +73,7 @@ def test_position_inheritance(class_type: Any) -> None:
 
 def test_position_is_abstract() -> None:
     """Ensure Position class cannot be instantiated directly."""
-    # Position cannot be instantiated directly
+    # Try to instantiate an abstract class, which should raise an error
     with pytest.raises(TypeError):
         _ = Position(item=Item(item_id=0, title='Spoon', cost=25))  # Should raise TypeError
 
