@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-@dataclass(frozen=False)
+@dataclass(frozen=True)
 class Item:
     item_id: int
     title: str
@@ -25,7 +25,7 @@ class Position(ABC):
 
     @property
     @abstractmethod
-    def cost(self) -> float:
+    def cost(self) -> float:  # 型アノテーションを追加
         pass
 
 
@@ -35,7 +35,7 @@ class CountedPosition(Position):
     count: int = 1
 
     @property
-    def cost(self) -> float:
+    def cost(self) -> float:  # 型アノテーションを追加
         return self.item.cost * self.count
 
 
@@ -45,7 +45,7 @@ class WeightedPosition(Position):
     weight: float = 1
 
     @property
-    def cost(self) -> float:
+    def cost(self) -> float:  # 型アノテーションを追加
         return self.item.cost * self.weight
 
 
