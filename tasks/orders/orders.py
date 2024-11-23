@@ -59,7 +59,14 @@ class Order:
     @property
     def order_cost(self) -> int:
         """Calculate the total cost of the order, applying promo if eligible."""
-        total_cost = sum(position.cost for position in self.positions)
+        total_cost = 0
+        for position in self.positions:
+            if isinstance(position, WeightedPosition):
+                total_cost += position.item.cost * position.weight  # Weighted cost calculation
+            elif isinstance(position, CountedPosition):
+                total_cost += position.item.cost * position.count  # Counted cost calculation
+
         if self.have_promo:
-            total_cost = round(total_cost * 0.85)
-        return int(total_cost)
+            total_cost = round(total_cost * 0.85)  # Apply promo if eligible
+
+        return total_cost
