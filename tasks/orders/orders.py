@@ -67,6 +67,6 @@ class Order:
                 total_cost += position.item.cost * position.count  # Counted cost calculation
 
         if self.have_promo:
-            total_cost = round(total_cost * 0.85)  # Apply promo if eligible
+            total_cost = int(round(total_cost * 0.85))  # Apply promo if eligible
 
         return total_cost
