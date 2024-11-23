@@ -62,4 +62,4 @@ class Order:
         total_cost = sum(position.cost for position in self.positions)
         if self.have_promo:
             total_cost = round(total_cost * 0.85)
-        return total_cost
+        return int(total_cost)
