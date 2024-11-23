@@ -74,11 +74,9 @@ def test_position_inheritance(class_type: Any) -> None:
 def test_position_is_abstract() -> None:
     item = Item(item_id=0, title='Spoon', cost=25)
 
-    assert getattr(Position.cost, '__is abstractmethod__', False)
-
     with pytest.raises(TypeError) as e:
         _ = Position(item=item)
-    assert "Can't instantiate abstract class Position without an implementation for abstract method 'cost'" in str(e.value)
+    assert "Can't instantiate abstract class Position with abstract method 'cost'" in str(e.value)
 
 
 @pytest.mark.parametrize('class_, input_, expected_cost', [
