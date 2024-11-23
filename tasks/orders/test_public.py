@@ -2,6 +2,9 @@ from dataclasses import is_dataclass, FrozenInstanceError, asdict
 from typing import Any
 from pathlib import Path
 import re
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "orders"))
 import pytest
 from orders import Item, Position, CountedPosition, WeightedPosition, Order
 
