@@ -62,9 +62,9 @@ class Order:
         total_cost = 0
         for position in self.positions:
             if isinstance(position, WeightedPosition):
-                total_cost += position.item.cost * position.weight  # Weighted cost calculation
+                total_cost += int(position.item.cost * position.weight)  # Weighted cost calculation
             elif isinstance(position, CountedPosition):
-                total_cost += position.item.cost * position.count  # Counted cost calculation
+                total_cost += int(position.item.cost * position.count)  # Counted cost calculation
 
         if self.have_promo:
             total_cost = int(round(total_cost * 0.85))  # Apply promo if eligible
