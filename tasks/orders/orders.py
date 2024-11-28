@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from typing import List
 
 
-@dataclass(frozen=False)
+@dataclass(frozen=True)
 class Item:
     item_id: int
     title: str
