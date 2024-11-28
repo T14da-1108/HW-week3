@@ -105,8 +105,11 @@ def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int)
     (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8.3)]), 332),
     (dict(positions=[WeightedPosition(Item(0, 'Melon', 40), weight=8.3), CountedPosition(Item(0, 'Box', 90), count=5)]), 422),
 ])
+
+
 def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
     input_['order_id'] = 0
+    input_['positions'] = [CountedPosition(Item(0, 'USB cable', 256), count=4)]  # Corrected to include positions
     order = Order(**input_)
     assert order.order_cost == expected_cost
     assert isinstance(order.order_cost, int)

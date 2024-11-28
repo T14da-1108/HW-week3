@@ -9,7 +9,7 @@ class Item:
     title: str
     cost: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # 初期化後に検証
         assert self.title != "", "Title cannot be empty"
         assert self.cost > 0, "Cost must be a positive integer"
