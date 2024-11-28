@@ -108,8 +108,9 @@ def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int)
 
 
 def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
+    # 必ず positions を渡す
     input_['order_id'] = 0
-    input_['positions'] = [CountedPosition(Item(0, 'USB cable', 256), count=4)]  # Corrected to include positions
+    input_['positions'] = [CountedPosition(Item(0, 'USB cable', 256), count=4)]  # positionsを渡す
     order = Order(**input_)
     assert order.order_cost == expected_cost
     assert isinstance(order.order_cost, int)
