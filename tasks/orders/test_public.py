@@ -90,13 +90,15 @@ def test_position_is_abstract() -> None:
     (WeightedPosition, dict(item=Item(0, 'Sugar', 256), weight=0.5), 128),
     (WeightedPosition, dict(item=Item(0, 'Melon', 40), weight=8.3), 332),
 ])
+
+
 def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int) -> None:
     position = class_(**input_)
     assert 'cost' not in asdict(position)
     assert position.cost == expected_cost
     assert isinstance(position.cost, (float, int))
 
-
+# Example of corrected test case for Order
 @pytest.mark.parametrize('input_, expected_cost', [
     (dict(positions=[CountedPosition(Item(0, 'USB cable', 256), count=4)]), 1024),
     (dict(positions=[CountedPosition(Item(0, 'USB cable', 256), count=2)], have_promo=True), 435),
@@ -108,9 +110,7 @@ def test_position_cost(class_: type, input_: dict[str, Any], expected_cost: int)
 
 
 def test_order_cost(input_: dict[str, Any], expected_cost: int) -> None:
-    # 必ず positions を渡す
     input_['order_id'] = 0
-    input_['positions'] = [CountedPosition(Item(0, 'USB cable', 256), count=4)]  # positionsを渡す
     order = Order(**input_)
     assert order.order_cost == expected_cost
     assert isinstance(order.order_cost, int)
