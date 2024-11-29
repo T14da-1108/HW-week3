@@ -1,10 +1,8 @@
-from dataclasses import dataclass, field, FrozenInstanceError
+from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from typing import List
 
-
 DISCOUNT_PERCENTS = 15
-
 
 @dataclass(frozen=True)
 class Item:
@@ -16,21 +14,6 @@ class Item:
         assert self.title, "Title cannot be empty"
         assert self.cost > 0, "Cost must be a positive integer"
 
-    def __lt__(self, other: 'Item') -> bool:
-        if self.cost == other.cost:
-            return self.title < other.title
-        return self.cost < other.cost
-
-
-class Position(ABC):
-    item: Item
-
-    @property
-    @abstractmethod
-    def cost(self) -> float:
-        pass
-
-
 @dataclass
 class CountedPosition(Position):
     item: Item
@@ -39,7 +22,6 @@ class CountedPosition(Position):
     @property
     def cost(self) -> float:
         return self.item.cost * self.count
-
 
 @dataclass
 class WeightedPosition(Position):
@@ -50,16 +32,20 @@ class WeightedPosition(Position):
     def cost(self) -> float:
         return self.item.cost * self.weight
 
+class Position(ABC):
+    item: Item
+
+    @property
+    @abstractmethod
+    def cost(self) -> float:
+        pass
 
 @dataclass
 class Order:
     order_id: int
     positions: List[Position] = field(default_factory=list)
     cost: int = 0
-    have_promo: bool = False
 
     def __post_init__(self) -> None:
         self.cost = int(sum(position.cost for position in self.positions))
-        if self.have_promo:
-            self.cost = int(self.cost * (1 - DISCOUNT_PERCENTS / 100))
         object.__setattr__(self, 'have_promo', False)
