@@ -62,7 +62,7 @@ class Order:
     order_id: int
     positions: List[Position] = field(default_factory=list)
     cost: int = 0
-    have_promo: bool = False  # Internal field
+    _have_promo: bool = False  # Internal field
 
     def __post_init__(self) -> None:
         self.cost = int(sum(position.cost for position in self.positions))
