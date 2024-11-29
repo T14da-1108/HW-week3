@@ -5,7 +5,7 @@ from typing import List
 
 DISCOUNT_PERCENTS = 15  # 割引率（パーセンテージ）
 
-# Item クラス：商品の基本情報
+
 @dataclass(frozen=True)
 class Item:
     item_id: int
