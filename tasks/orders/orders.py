@@ -5,19 +5,19 @@ from typing import List
 
 DISCOUNT_PERCENTS = 15  # 割引率（パーセンテージ）
 
-
+# Item クラス：商品の基本情報
 @dataclass(frozen=True)
 class Item:
     item_id: int
     title: str
     cost: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # 商品のタイトルは空であってはならない、cost は正の整数でなければならない
         assert self.title, "Title cannot be empty"
         assert self.cost > 0, "Cost must be a positive integer"
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'Item') -> bool:
         # 比較順序: cost が同じならタイトルで比較
         if self.cost == other.cost:
             return self.title < other.title
@@ -30,7 +30,7 @@ class Position(ABC):
 
     @property
     @abstractmethod
-    def cost(self):
+    def cost(self) -> float:
         """Costは具象クラスで実装されるべき"""
         pass
 
@@ -65,7 +65,7 @@ class Order:
     cost: int = 0
     have_promo: bool = False  # プロモーションがあるかどうか
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         # 注文の総コストを計算
         self.cost = int(sum(position.cost for position in self.positions))
         if self.have_promo:
