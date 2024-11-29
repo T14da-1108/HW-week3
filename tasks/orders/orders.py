@@ -5,6 +5,7 @@ from functools import total_ordering
 
 DISCOUNT_PERCENTS = 15
 
+
 @total_ordering
 @dataclass(frozen=True)
 class Item:
