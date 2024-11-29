@@ -6,7 +6,7 @@ from typing import List
 DISCOUNT_PERCENTS = 15
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class Item:
     item_id: int
     title: str
